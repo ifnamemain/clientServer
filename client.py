@@ -16,7 +16,6 @@ class client(socket.socket):
     self.bufSz = 1024
     self.data = None
     self.timeOut = 1
-    self.connect((self.host, self.port))
     self.ready = None
     
   def openNp(self):
@@ -25,6 +24,7 @@ class client(socket.socket):
   def killNp(self):
     self.write('killNp')
     
+    self.connect((self.host, self.port))
   def openTMA(self):
     self.write('openTMA')
     
@@ -38,7 +38,7 @@ class client(socket.socket):
   def read(self):
     self.ready = select.select([self], [], [], self.timeOut)
     while not self.ready[0]:
-      print(self.ready[0])
+      print('trying to read empty network buffer')
       time.sleep(1)
       self.ready = select.select([self], [], [], self.timeOut) 
     self.data = self.recv(self.bufSz)
@@ -52,7 +52,7 @@ class client(socket.socket):
       pass
   
 if __name__ == '__main__':
-  HOST = '10.133.0.202'  # The server's hostname or IP address
+  HOST = 'localhost'  # The server's hostname or IP address
   PORT = 57861        # The port used by the server
   c = client(HOST, PORT)
 

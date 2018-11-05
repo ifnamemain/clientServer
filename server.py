@@ -6,13 +6,14 @@ import psutil
 import labbench as lb
 import os
 
+
 class server(socket.socket):
   
   processes = {'notepad': 'notepad.exe', 'tma': 'TmaApplication.exe'}
-  tmaPath = r'''C:\Program Files (x86)\Aeroflex\TM500\LTE 
-                - LMF 8.13.0\Test Mobile Application'''
+  tmaPath = r'C:\Program Files (x86)\Aeroflex\TM500' \
+            r'\LTE - LMF 8.11.0\Test Mobile Application'
   tmaFlags = ['/u', "Default User", '/c', 'y', '/p', 
-              '5003', '/a', 'n', '/ea', 'y', '/pa'] 
+              '5003', '/a', 'n', '/ea', 'y', '/pa'] #Trying to force double quotes on 'Default User'.  Tma requires it.
   
   def __init__(self, host, port):
     super().__init__(socket.AF_INET, socket.SOCK_STREAM)
@@ -34,14 +35,15 @@ class server(socket.socket):
       except psutil.NoSuchProcess:
         continue
   
-  @staticmethod      
-  def open_process(process, path = None, flags = []):
-    if process in server.processes:
+  @classmethod      
+  def open_process(cls, process, path = None, flags = []):
+    if process in cls.processes.values():
       if path is not None:
         cmd = [os.path.join(path, process)]
       else:
         cmd = [process]
       cmd.extend(flags)
+      print(cmd)
       print('Trying to open %s' % process)
       return subprocess.Popen(cmd, stdin = subprocess.PIPE, 
                           stdout = subprocess.PIPE, shell = False)
@@ -51,7 +53,6 @@ class server(socket.socket):
   def process_data(self, data):
     ret = True
     msg = b''
-    print('recieved: ', data.decode(), ' from client: %r'%addr[0])
     if data.decode() == 'q':
       ret = False
     elif data.decode() == 'openNp':
@@ -72,24 +73,24 @@ class server(socket.socket):
       msg = b'echo: ' + data
     return ret, msg
 
-
 if __name__ == '__main__':
   HOST = ''  # Standard loopback interface address (localhost or '' for connections from anyone)
   PORT = 57861  # Port to listen on (non-privileged ports are > 1023)
   with server(HOST, PORT) as s:
     while True:
       print('Waiting for client connection')
-      conn, addr = s.accept()
+      conn, addr = s.accept()  #blocks here until client connects
       try:
         with conn:
           print('Connected by', addr)
           running = True
           while running:
-            data = conn.recv(1024)
+            data = conn.recv(1024)  #blocks here until server recieves msg
+            print('recieved: ', data.decode(), ' from client: %r'%addr[0])
             running, msg = s.process_data(data)  #process msgs from client
             conn.sendall(msg)  #echo back to client appropriate response
-      except:
-          pass
+      except Exception as e:
+          print(e)
           
           
           
