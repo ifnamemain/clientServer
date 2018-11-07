@@ -21,7 +21,6 @@ class server(socket.socket):
     self.__pid = None
     self.bind((self.__host, self.__port))
     self.listen()
-    self.run()
     
   def run(self):
     print('Waiting for client connection')
