@@ -53,9 +53,10 @@ class client(socket.socket):
       pass
   
 if __name__ == '__main__':
-  HOST = 'localhost'  # The server's hostname or IP address
-  PORT = 8888        # The port used by the server
-  c = client(HOST, PORT)
+    import sys
+    HOST = str(sys.argv[1])  # The server's hostname or IP address
+    PORT = int(sys.argv[2])        # The port used by the server
+    c = client(HOST, PORT)
 
 
 

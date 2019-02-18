@@ -82,15 +82,16 @@ class server(socket.socket):
       self.kill_by_name('tma')
       msg = b'killed tma'
     else:
-      msg = b'echo: ' + data
+      msg = data.upper()
     return ret, msg
 
 if __name__ == '__main__':
-  HOST = '0.0.0.0'  # Standard loopback interface address (localhost or '' for connections from anyone)
-  PORT = 8888
-  with server(HOST, PORT) as s:
-    while True:
-      s.run()
+    import sys
+    HOST = str(sys.argv[1])  # Standard loopback interface address (localhost or '' for connections from anyone)
+    PORT = int(sys.argv[2])
+    with server(HOST, PORT) as s:
+        while True:
+            s.run()
           
           
           

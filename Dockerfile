@@ -5,4 +5,4 @@ FROM python:3-onbuild
 EXPOSE 8888
 
 # run the application
-CMD ["python", "./server.py"]
+CMD ["python", "./server.py", "0.0.0.0", "8888"]
