@@ -17,6 +17,7 @@ class client(socket.socket):
     self.data = None
     self.timeOut = 1
     self.ready = None
+    self.connect((self.host, self.port))
     
   def openNp(self):
     self.write('openNp')
@@ -53,7 +54,7 @@ class client(socket.socket):
   
 if __name__ == '__main__':
   HOST = 'localhost'  # The server's hostname or IP address
-  PORT = 57861        # The port used by the server
+  PORT = 8888        # The port used by the server
   c = client(HOST, PORT)
 
 

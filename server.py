@@ -3,7 +3,7 @@
 import socket
 import subprocess
 import psutil
-import labbench as lb
+#import labbench as lb
 import os
 
 class server(socket.socket):
@@ -44,7 +44,7 @@ class server(socket.socket):
         proc = psutil.Process(pid)
         for target in names:
           if proc.name().lower() == server.PROCESSES[target].lower():
-            lb.logger.info('killing process {}'.format(proc.name()))
+            #lb.logger.info('killing process {}'.format(proc.name()))
             proc.kill()
       except psutil.NoSuchProcess:
         continue
@@ -86,8 +86,8 @@ class server(socket.socket):
     return ret, msg
 
 if __name__ == '__main__':
-  HOST = ''  # Standard loopback interface address (localhost or '' for connections from anyone)
-  PORT = 57861  # Port to listen on (non-privileged ports are > 1023)
+  HOST = '0.0.0.0'  # Standard loopback interface address (localhost or '' for connections from anyone)
+  PORT = 8888
   with server(HOST, PORT) as s:
     while True:
       s.run()
