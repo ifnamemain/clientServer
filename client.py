@@ -24,38 +24,29 @@ class client(socket.socket):
     
   def killNp(self):
     self.write('killNp')
-    
     self.connect((self.host, self.port))
-  def openTMA(self):
-    self.write('openTMA')
-    
-  def killTMA(self):
-    self.write('killTMA')
   
-  def write(self, msg):
+  def msg_resp(self, msg):
     self.sendall(str.encode(msg))
-    self.read()
-    
-  def read(self):
     self.ready = select.select([self], [], [], self.timeOut)
     while not self.ready[0]:
       print('trying to read empty network buffer')
       time.sleep(1)
       self.ready = select.select([self], [], [], self.timeOut) 
     self.data = self.recv(self.bufSz)
-    print('recieved: ', self.data.decode(), ' from server: %r'%self.host)
+    resp = f'received {self.data.decode()} from {self.host}'
+    return resp
       
   def close(self):
     try:
       self.sendall(str.encode('q'))
-      self.close()
-    except:
-      pass
+    except Exception as e:
+      print(f'Error on close: {e}')
   
 if __name__ == '__main__':
     import sys
     HOST = str(sys.argv[1])  # The server's hostname or IP address
-    PORT = int(sys.argv[2])        # The port used by the server
+    PORT = int(sys.argv[2])  # The port used by the server
     c = client(HOST, PORT)
 
 
